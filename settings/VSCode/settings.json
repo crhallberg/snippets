@@ -1,0 +1,25 @@
+{
+    "workbench.colorTheme": "Monokai",
+    "workbench.iconTheme": null,
+    "editor.fontFamily": "\"Iosevka Term SS09\", Consolas, 'Courier New', monospace",
+    "editor.fontSize": 16,
+    "editor.wordWrapColumn": 85,
+    "editor.autoClosingBrackets": "never",
+    "editor.autoClosingQuotes": "never",
+    "editor.autoSurround": "never",
+    "editor.minimap.enabled": false,
+    "editor.rulers": [85],
+    "editor.tokenColorCustomizations": {
+        "[Monokai]": {
+            "comments": "#66d9ef"
+        }
+    },
+    "prettier.htmlWhitespaceSensitivity": "strict",
+    "files.eol": "\n",
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "html.autoClosingTags": false,
+    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+    "editor.suggest.localityBonus": true,
+    "editor.acceptSuggestionOnCommitCharacter": false,
+}
