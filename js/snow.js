@@ -1,7 +1,26 @@
 /**
  * Add snow background to data-snow elements
  *
+ * CSS:
+ * [data-snow] {
+ *   position: relative;
+ * }
+ * [data-snow] * {
+ *   position: relative;
+ *   z-index: 2;
+ * }
+ * [data-snow] canvas {
+ *   position: absolute;
+ *   top: 0;
+ *   left: 0;
+ *   z-index: 1;
+ * }
+ *
  * - Float elements and children need higher z-indexes
+ * - Float elements may also need position: unset;
+ *   - IE doesn't do position: unset. Instead of [data-snow] *:
+ *     - [data-snow] .container
+ *     - [data-snow] *:not(canvas, .falvey-header)
  */
 (function initializeSnow() {
   const els = document.querySelectorAll("[data-snow]");
@@ -89,6 +108,7 @@
   const elArr = [].slice.apply(els);
   for (let i = 0; i < elArr.length; i++) {
     const e = elArr[i];
+    const count = parseInt(e.dataset.snow) || 100;
     const a = document.createElement("canvas");
     a.width = e.offsetWidth;
     a.height = e.offsetHeight;
@@ -97,7 +117,7 @@
     drawSnow(
       a,
       c,
-      new Array(100).fill(0).map(_ => ({
+      new Array(count).fill(0).map(_ => ({
         x: Math.random() * a.width,
         y: Math.random() * (a.height + 200) - 100,
         size: Math.random() * 7 + 5,
