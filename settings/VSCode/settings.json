@@ -1,32 +1,37 @@
 {
   "workbench.colorTheme": "Monokai",
   "workbench.iconTheme": null,
-  "editor.fontFamily": "\"Iosevka Term SS09\", Consolas, 'Courier New', monospace",
-  "editor.fontSize": 16,
-  "editor.wordWrapColumn": 85,
+  "editor.acceptSuggestionOnCommitCharacter": false,
   "editor.autoClosingBrackets": "never",
   "editor.autoClosingQuotes": "never",
   "editor.autoSurround": "never",
+  "editor.fontFamily": "\"Iosevka Term SS09\", Consolas, 'Courier New', monospace",
+  "editor.fontSize": 16,
   "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "all",
   "editor.rulers": [85],
+  "editor.suggest.localityBonus": true,
+  "editor.tabSize": 2,
   "editor.tokenColorCustomizations": {
     "[Monokai]": {
       "textMateRules": [
         {
           "scope": "comment.line",
           "settings": {
-            "foreground": "#66d9ef"
+            "foreground": "#a6e22e"
           }
         }
       ]
     }
   },
-  "prettier.htmlWhitespaceSensitivity": "strict",
+  "editor.wordWrapColumn": 85,
   "files.eol": "\n",
-  "files.trimTrailingWhitespace": true,
   "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
   "html.autoClosingTags": false,
-  "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
-  "editor.suggest.localityBonus": true,
-  "editor.acceptSuggestionOnCommitCharacter": false
+  "liveServer.settings.donotVerifyTags": true,
+  "prettier.htmlWhitespaceSensitivity": "strict",
+  "terminal.integrated.shell.windows": "C:/Program Files/Git/bin/bash.exe",
+  "window.zoomLevel": 0,
+  "workbench.panel.defaultLocation": "right",
 }
