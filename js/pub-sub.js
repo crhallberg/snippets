@@ -1,6 +1,7 @@
 function pubsub(_el) {
   const el = _el || document;
 
+  // Emit custom event
   function emit(name) {
     var parameters = Array.from(arguments).slice(1); // capture additional arguments
     if (parameters.length === 0) {
@@ -26,6 +27,7 @@ function pubsub(_el) {
     return el;
   }
 
+  // Remove listener
   function unlisten(name, func) {
     el.removeEventListener(name, func);
     return el;
