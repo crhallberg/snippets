@@ -6,11 +6,11 @@
  *    </div>
  *    <footer class="blob-footer" data-slot="footer">Default Footer</footer>
  *  </div>
-  */
+ */
 
-// === No render ===
+// === With render ===
 
-const Template = (function templateInit() {
+const Template = (function() {
   let templates = {};
   document.querySelectorAll("[data-template]").forEach(t => {
     const cloneEl = t.cloneNode(true);
@@ -25,22 +25,37 @@ const Template = (function templateInit() {
     });
   });
 
-  return function getTemplate(id, _slots = {}) {
+  function _render(template, slots) {
+    for (let key in slots) {
+      if (slots[key].innerHTML) {
+        while (template.slots[key].el.hasChildNodes()) {
+          template.slots[key].el.removeChild(template.slots[key].el.lastChild);
+        }
+        template.slots[key].el.appendChild(slots[key]);
+      } else {
+        template.slots[key].el.innerHTML = slots[key];
+      }
+    }
+    return template.el.cloneNode(true);
+  }
+
+  return function(id, _slots = {}) {
     if (typeof templates[id] === "undefined") {
       throw ReferenceError("Undefined template: " + id);
     }
     const template = templates[id];
+    let elSlots = {};
     for (let key in template.slots) {
-      const content = _slots[key] || template.slots[key].default;
-      if (content.innerHTML) {
-        while (template.slots[key].el.hasChildNodes()) {
-          template.slots[key].el.removeChild(template.slots[key].el.lastChild);
-        }
-        template.slots[key].el.appendChild(content);
-      } else {
-        template.slots[key].el.innerHTML = content;
-      }
+      elSlots[key] = _slots[key] || template.slots[key].default;
     }
-    return template.el.cloneNode(true);
+    const cloneNode = _render(template, elSlots);
+    // TODO: Only re-paint updated
+    cloneNode.render = function(_slots) {
+      for (let key in _slots) {
+        elSlots[key] = _slots[key];
+      }
+      cloneNode.innerHTML = _render(template, elSlots).innerHTML;
+    };
+    return cloneNode;
   };
 })();
