@@ -1,29 +1,32 @@
 /**
- *  <div class="blob" id="blob-template" data-template>
+ *  <div class="blob" data-template="blob-template">
  *    <div class="blob-body">
  *      <button class="blob-header" data-slot="header">Default Header</button>
  *      <p data-slot="description">Default Description</p>
  *    </div>
  *    <footer class="blob-footer" data-slot="footer">Default Footer</footer>
  *  </div>
-  */
+ */
 
 // === No render ===
 
 const Template = (function templateInit() {
   let templates = {};
-  document.querySelectorAll("[data-template]").forEach(t => {
-    const cloneEl = t.cloneNode(true);
-    const id = cloneEl.dataset.template;
-    templates[id] = { el: cloneEl, slots: {} };
-    cloneEl.removeAttribute("data-template");
-    cloneEl.querySelectorAll("[data-slot]").forEach(function(slot) {
-      templates[id].slots[slot.dataset.slot] = {
-        el: slot,
-        default: slot.innerHTML,
-      };
+  document
+    .querySelectorAll("[data-template]")
+    .forEach(function templateInit(t) {
+      let slots = {};
+      const el = t.cloneNode(true);
+      el.querySelectorAll("[data-slot]").forEach(function(el) {
+        const slot = el.dataset.slot;
+        if (typeof slots[slot] === "undefined") {
+          slots[slot] = [];
+        }
+        slots[slot].push({ el, default: el.innerHTML });
+      });
+      templates[el.dataset.template] = { el, slots };
+      el.removeAttribute("data-template");
     });
-  });
 
   return function getTemplate(id, _slots = {}) {
     if (typeof templates[id] === "undefined") {
@@ -32,13 +35,17 @@ const Template = (function templateInit() {
     const template = templates[id];
     for (let key in template.slots) {
       const content = _slots[key] || template.slots[key].default;
-      if (content.innerHTML) {
-        while (template.slots[key].el.hasChildNodes()) {
-          template.slots[key].el.removeChild(template.slots[key].el.lastChild);
+      for (let { el } of template.slots[key]) {
+        if (typeof el.value !== "undefined") {
+          el.value = content;
+        } else if (content.innerHTML) {
+          while (el.hasChildNodes()) {
+            el.removeChild(el.lastChild);
+          }
+          el.appendChild(content);
+        } else {
+          el.innerHTML = content;
         }
-        template.slots[key].el.appendChild(content);
-      } else {
-        template.slots[key].el.innerHTML = content;
       }
     }
     return template.el.cloneNode(true);

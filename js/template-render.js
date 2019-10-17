@@ -1,5 +1,5 @@
 /**
- *  <div class="blob" id="blob-template" data-template>
+ *  <div class="blob" data-template="blob-template">
  *    <div class="blob-body">
  *      <button class="blob-header" data-slot="header">Default Header</button>
  *      <p data-slot="description">Default Description</p>
@@ -12,50 +12,52 @@
 
 const Template = (function() {
   let templates = {};
-  document.querySelectorAll("[data-template]").forEach(t => {
-    const cloneEl = t.cloneNode(true);
-    const id = cloneEl.dataset.template;
-    templates[id] = { el: cloneEl, slots: {} };
-    cloneEl.removeAttribute("data-template");
-    cloneEl.querySelectorAll("[data-slot]").forEach(function(slot) {
-      templates[id].slots[slot.dataset.slot] = {
-        el: slot,
-        default: slot.innerHTML,
-      };
+  document
+    .querySelectorAll("[data-template]")
+    .forEach(function templateInit(t) {
+      const cloneEl = t.cloneNode(true);
+      templates[cloneEl.dataset.template] = cloneEl;
+      cloneEl.removeAttribute("data-template");
     });
-  });
 
-  function _render(template, slots) {
-    for (let key in slots) {
-      if (slots[key].innerHTML) {
-        while (template.slots[key].el.hasChildNodes()) {
-          template.slots[key].el.removeChild(template.slots[key].el.lastChild);
+  function _render(slots, data) {
+    for (let key in data) {
+      for (let slot of slots[key]) {
+        if (typeof slot.el.value !== "undefined") {
+          slot.el.value = data[key];
+        } else if (data[key].innerHTML) {
+          while (slot.el.hasChildNodes()) {
+            slot.el.removeChild(slot.el.lastChild);
+          }
+          slot.el.appendChild(data[key]);
+        } else {
+          slot.el.innerHTML = data[key];
         }
-        template.slots[key].el.appendChild(slots[key]);
-      } else {
-        template.slots[key].el.innerHTML = slots[key];
       }
     }
-    return template.el.cloneNode(true);
   }
 
   return function(id, _slots = {}) {
     if (typeof templates[id] === "undefined") {
       throw ReferenceError("Undefined template: " + id);
     }
-    const template = templates[id];
-    let elSlots = {};
-    for (let key in template.slots) {
-      elSlots[key] = _slots[key] || template.slots[key].default;
-    }
-    const cloneNode = _render(template, elSlots);
-    // TODO: Only re-paint updated
-    cloneNode.render = function(_slots) {
-      for (let key in _slots) {
-        elSlots[key] = _slots[key];
+
+    let slots = {};
+    const cloneEl = templates[id].cloneNode(true);
+    cloneEl.querySelectorAll("[data-slot]").forEach(function(slot) {
+      if (typeof slots[slot.dataset.slot] === "undefined") {
+        slots[slot.dataset.slot] = [];
       }
-      cloneNode.innerHTML = _render(template, elSlots).innerHTML;
+      slots[slot.dataset.slot].push({
+        el: slot,
+        default: slot.innerHTML,
+      });
+    });
+
+    cloneEl.render = function(data) {
+      return _render(slots, data);
     };
-    return cloneNode;
+    cloneEl.render(_slots);
+    return cloneEl;
   };
 })();
