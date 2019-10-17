@@ -10,7 +10,7 @@
 
 // === With render ===
 
-const Template = (function() {
+const Template = (function TemplateEngine() {
   let templates = {};
   document
     .querySelectorAll("[data-template]")
@@ -22,24 +22,24 @@ const Template = (function() {
 
   function _render(slots, data) {
     for (let key in data) {
-      for (let slot of slots[key]) {
-        if (typeof slot.el.value !== "undefined") {
-          slot.el.value = data[key];
-        } else if (data[key].innerHTML) {
-          while (slot.el.hasChildNodes()) {
-            slot.el.removeChild(slot.el.lastChild);
+      for (let { el } of slots[key]) {
+        if (el instanceof HTMLInputElement) {
+          el.value = data[key];
+        } else if (data[key] instanceof HTMLElement) {
+          while (el.hasChildNodes()) {
+            el.removeChild(el.lastChild);
           }
-          slot.el.appendChild(data[key]);
+          el.appendChild(data[key]);
         } else {
-          slot.el.innerHTML = data[key];
+          el.innerHTML = data[key];
         }
       }
     }
   }
 
-  return function(id, _slots = {}) {
+  return function getTemplate(id, _slots = {}) {
     if (typeof templates[id] === "undefined") {
-      throw ReferenceError("Undefined template: " + id);
+      throw ReferenceError("Undefined Template: " + id);
     }
 
     let slots = {};
@@ -57,7 +57,9 @@ const Template = (function() {
     cloneEl.render = function(data) {
       return _render(slots, data);
     };
+
     cloneEl.render(_slots);
+
     return cloneEl;
   };
 })();

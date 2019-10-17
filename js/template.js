@@ -10,7 +10,7 @@
 
 // === No render ===
 
-const Template = (function templateInit() {
+const Template = (function TemplateEngine() {
   let templates = {};
   document
     .querySelectorAll("[data-template]")
@@ -30,15 +30,15 @@ const Template = (function templateInit() {
 
   return function getTemplate(id, _slots = {}) {
     if (typeof templates[id] === "undefined") {
-      throw ReferenceError("Undefined template: " + id);
+      throw ReferenceError("Undefined Template: " + id);
     }
     const template = templates[id];
     for (let key in template.slots) {
       const content = _slots[key] || template.slots[key].default;
       for (let { el } of template.slots[key]) {
-        if (typeof el.value !== "undefined") {
+        if (el instanceof HTMLInputElement) {
           el.value = content;
-        } else if (content.innerHTML) {
+        } else if (content instanceof HTMLElement) {
           while (el.hasChildNodes()) {
             el.removeChild(el.lastChild);
           }
