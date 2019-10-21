@@ -35,7 +35,8 @@ function throttle(func, delay) {
 // From: 1 2 3 -
 //   To: - - - [1,2,3]
 function accumulate(after, limit) {
-  let timeout, pool = [];
+  let timeout,
+    pool = [];
   return function(op) {
     clearTimeout(timeout);
     pool.push(op);
@@ -43,5 +44,32 @@ function accumulate(after, limit) {
       after(pool);
       pool = [];
     }, limit);
+  };
+}
+
+// Pace
+// Queue and space calls
+// From: 1 2 3
+//   To: 1 - - 2 - - 3 - -
+function pace(func, interval) {
+  let timeout = null;
+  let queue = [];
+
+  function call() {
+    func.apply(...queue.shift());
+    timeout = setTimeout(function() {
+      if (queue.length > 0) {
+        call();
+      } else {
+        timeout = null;
+      }
+    }, interval);
+  }
+
+  return function() {
+    queue.push([this, arguments]);
+    if (timeout === null) {
+      call();
+    }
   };
 }
