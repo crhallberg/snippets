@@ -14,9 +14,8 @@ const Template = (function TemplateEngine() {
   let templates = {};
   document
     .querySelectorAll("[data-template]")
-    .forEach(function templateInit(t) {
+    .forEach(function templateInit(el) {
       let slots = {};
-      const el = t.cloneNode(true);
       el.querySelectorAll("[data-slot]").forEach(function(el) {
         const slot = el.dataset.slot;
         if (typeof slots[slot] === "undefined") {
@@ -25,7 +24,6 @@ const Template = (function TemplateEngine() {
         slots[slot].push({ el, default: el.innerHTML });
       });
       templates[el.dataset.template] = { el, slots };
-      el.removeAttribute("data-template");
     });
 
   return function getTemplate(id, _slots = {}) {
@@ -34,20 +32,32 @@ const Template = (function TemplateEngine() {
     }
     const template = templates[id];
     for (let key in template.slots) {
-      const content = _slots[key] || template.slots[key].default;
-      for (let { el } of template.slots[key]) {
-        if (el instanceof HTMLInputElement) {
-          el.value = content;
-        } else if (content instanceof HTMLElement) {
-          while (el.hasChildNodes()) {
-            el.removeChild(el.lastChild);
+      for (let slot of template.slots[key]) {
+        const content = _slots[key] || slot.default;
+        if (content instanceof HTMLElement) {
+          while (slot.el.hasChildNodes()) {
+            slot.el.removeChild(slot.el.lastChild);
           }
-          el.appendChild(content);
+          slot.el.appendChild(content);
+        } else if (content instanceof Object && !Array.isArray(content)) {
+          for (let attr in content) {
+            if (attr in slot.el) {
+              slot.el[attr] = content[attr];
+            } else {
+              console.error("Slot element has not attribute '" + attr + "'");
+            }
+          }
+        } else if (slot.el instanceof HTMLInputElement) {
+          slot.el.value = content;
         } else {
-          el.innerHTML = content;
+          slot.el.innerHTML = Array.isArray(content)
+            ? content.join(" ")
+            : content;
         }
       }
     }
-    return template.el.cloneNode(true);
+    const el = template.el.cloneNode(true);
+    el.removeAttribute("data-template");
+    return el;
   };
 })();

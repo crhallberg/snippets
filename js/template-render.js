@@ -23,15 +23,25 @@ const Template = (function TemplateEngine() {
   function _render(slots, data) {
     for (let key in data) {
       for (let { el } of slots[key]) {
-        if (el instanceof HTMLInputElement) {
-          el.value = data[key];
-        } else if (data[key] instanceof HTMLElement) {
+        if (data[key] instanceof HTMLElement) {
           while (el.hasChildNodes()) {
             el.removeChild(el.lastChild);
           }
           el.appendChild(data[key]);
+        } else if (content instanceof Object && !Array.isArray(content)) {
+          for (let attr in content) {
+            if (attr in slot.el) {
+              slot.el[attr] = content[attr];
+            } else {
+              console.error("Slot element has not attribute '" + attr + "'");
+            }
+          }
+        } else if (slot.el instanceof HTMLInputElement) {
+          slot.el.value = content;
         } else {
-          el.innerHTML = data[key];
+          slot.el.innerHTML = Array.isArray(content)
+            ? content.join(" ")
+            : content;
         }
       }
     }
