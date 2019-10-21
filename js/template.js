@@ -6,6 +6,8 @@
  *    </div>
  *    <footer class="blob-footer" data-slot="footer">Default Footer</footer>
  *  </div>
+ *
+ *  const el = Template("blob", { header: "TITLE", footer: "Public Domain 1.0" });
  */
 
 // === No render ===
