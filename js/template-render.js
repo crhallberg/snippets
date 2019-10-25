@@ -17,10 +17,10 @@ const Template = (function TemplateEngine() {
   let templates = {};
   document
     .querySelectorAll("[data-template]")
-    .forEach(function templateInit(t) {
-      const cloneEl = t.cloneNode(true);
-      templates[cloneEl.dataset.template] = cloneEl;
-      cloneEl.removeAttribute("data-template");
+    .forEach(function templateInit(_el) {
+      const el = _el.parentNode.removeChild(_el);
+      templates[cloneEl.dataset.template] = el;
+      el.removeAttribute("data-template");
     });
 
   function _render(slots, data) {
@@ -57,12 +57,12 @@ const Template = (function TemplateEngine() {
 
     let slots = {};
     const cloneEl = templates[id].cloneNode(true);
-    cloneEl.querySelectorAll("[data-slot]").forEach(function(slot) {
-      if (typeof slots[slot.dataset.slot] === "undefined") {
-        slots[slot.dataset.slot] = [];
+    cloneEl.querySelectorAll("[data-slot]").forEach(function(el) {
+      if (typeof slots[el.dataset.slot] === "undefined") {
+        slots[el.dataset.slot] = [];
       }
-      slots[slot.dataset.slot].push({
-        el: slot,
+      slots[el.dataset.slot].push({
+        el,
         default: slot.innerHTML,
       });
     });

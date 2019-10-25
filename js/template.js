@@ -16,8 +16,9 @@ const Template = (function TemplateEngine() {
   let templates = {};
   document
     .querySelectorAll("[data-template]")
-    .forEach(function templateInit(el) {
+    .forEach(function templateInit(_el) {
       let slots = {};
+      const el = _el.parentNode.removeChild(_el);
       el.querySelectorAll("[data-slot]").forEach(function(el) {
         const slot = el.dataset.slot;
         if (typeof slots[slot] === "undefined") {
@@ -26,6 +27,7 @@ const Template = (function TemplateEngine() {
         slots[slot].push({ el, default: el.innerHTML });
       });
       templates[el.dataset.template] = { el, slots };
+      el.removeAttribute("data-template");
     });
 
   return function getTemplate(id, _slots = {}) {
@@ -58,8 +60,6 @@ const Template = (function TemplateEngine() {
         }
       }
     }
-    const el = template.el.cloneNode(true);
-    el.removeAttribute("data-template");
-    return el;
+    return template.el.cloneNode(true);
   };
 })();
