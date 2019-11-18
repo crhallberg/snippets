@@ -19,18 +19,20 @@ const Template = (function TemplateEngine() {
     .querySelectorAll("[data-template]")
     .forEach(function templateInit(_el) {
       const el = _el.parentNode.removeChild(_el);
-      templates[cloneEl.dataset.template] = el;
+      templates[el.dataset.template] = el;
       el.removeAttribute("data-template");
     });
 
   function _render(slots, data) {
-    for (let key in data) {
-      for (let { el } of slots[key]) {
+    for (let key in slots) {
+      for (let slot of slots[key]) {
+        const content =
+          typeof data[key] !== "undefined" ? data[key] : slot.default;
         if (data[key] instanceof HTMLElement) {
-          while (el.hasChildNodes()) {
-            el.removeChild(el.lastChild);
+          while (slot.el.hasChildNodes()) {
+            slot.el.removeChild(slot.el.lastChild);
           }
-          el.appendChild(data[key]);
+          slot.el.appendChild(data[key]);
         } else if (content instanceof Object && !Array.isArray(content)) {
           for (let attr in content) {
             if (attr in slot.el) {
@@ -50,7 +52,7 @@ const Template = (function TemplateEngine() {
     }
   }
 
-  return function getTemplate(id, _slots = {}) {
+  return function getTemplate(id, data = {}) {
     if (typeof templates[id] === "undefined") {
       throw ReferenceError("Undefined Template: " + id);
     }
@@ -63,7 +65,7 @@ const Template = (function TemplateEngine() {
       }
       slots[el.dataset.slot].push({
         el,
-        default: slot.innerHTML,
+        default: el.innerHTML,
       });
     });
 
@@ -71,7 +73,7 @@ const Template = (function TemplateEngine() {
       return _render(slots, data);
     };
 
-    cloneEl.render(_slots);
+    cloneEl.render(data);
 
     return cloneEl;
   };
