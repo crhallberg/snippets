@@ -49,10 +49,9 @@ jsonText = jsonText.replace("'", "") # remove single-quotes
 jsonText = jsonText.replace("[ ", '"') # replace brackets
 jsonText = jsonText.replace(",\n", '",\n') # close strings
 jsonText = jsonText.replace(",\n}", '\n}') # remove dangling comma
-print(toJSON(jsonText))
 fonts = json.loads(toJSON(jsonText))
 for f in fonts:
-    root += "--font-%s: %s;\n" % (f, fonts[f])
+    root += "--family-%s: %s;\n" % (f, fonts[f])
 
 with open("tailwind-vars.css", "w", encoding="utf-8") as file:
     file.write(root + "}")
