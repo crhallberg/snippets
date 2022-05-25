@@ -58,9 +58,10 @@ function pace(func, interval) {
   function call() {
     func.apply(...queue.shift());
     timeout = setTimeout(function() {
-      timeout = null;
       if (queue.length > 0) {
         call();
+      } else { 
+        timeout = null;
       }
     }, interval);
   }
