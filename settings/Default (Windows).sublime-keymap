@@ -1,0 +1,18 @@
+[
+    // Multi-cursor
+    { "keys": ["ctrl+d"], "command": "find_under_expand" },
+    { "keys": ["ctrl+shift+d"], "command": "find_all_under" },
+    { "keys": ["ctrl+k", "ctrl+d"], "command": "find_under_expand_skip" },
+
+    // Duplicate
+    { "keys": ["ctrl+l"], "command": "duplicate_line" },
+
+    // Word wrap
+    {
+        "keys": ["alt+z"],
+        "command": "toggle_setting",
+        "args": {
+            "setting": "word_wrap"
+        }
+    }
+]
