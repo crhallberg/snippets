@@ -1,0 +1,34 @@
+{
+	"hot_exit": "disabled",
+
+	"theme": "Adaptive.sublime-theme",
+	"color_scheme": "auto",
+	"light_color_scheme": "Catppuccin Latte.sublime-color-scheme",
+	"dark_color_scheme": "Catppuccin Mocha.sublime-color-scheme",
+	"line_padding_top": 1,
+	"line_padding_bottom": 1,
+	"rulers": [85],
+	"margin": 0,
+
+	"caret_extra_top": 1,
+	"caret_extra_bottom": 1,
+	"caret_extra_width": 2,
+	"block_caret": false,
+
+	"auto_match_enabled": false,
+	"auto_close_tags": false,
+	"highlight_line": true,
+	"trim_trailing_white_space_on_save": "all",
+	"shift_tab_unindent": true,
+	"translate_tabs_to_spaces": true,
+
+	/*
+	"font_face": "Cousine",
+	"font_face": "Fira Code Medium",
+	"font_face": "Iosevka Term SS07",
+	"font_face": "Source Code Pro",
+	"font_face": "Sudo",
+	*/
+	"font_face": "IBM Plex Mono Text",
+	"font_size": 13,
+}
